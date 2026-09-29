@@ -43,6 +43,10 @@ import { AdminAuthController } from './admin/admin-auth.controller.js';
 import { AdminAuthService } from './admin/admin-auth.service.js';
 import { AdminWorkshopsController } from './admin/admin-workshops.controller.js';
 import { AdminWorkshopsService } from './admin/admin-workshops.service.js';
+import { AdminDomainsController } from './admin/admin-domains.controller.js';
+import { AdminDomainsService } from './admin/admin-domains.service.js';
+import { AdminUsersController } from './admin/admin-users.controller.js';
+import { AdminUsersService } from './admin/admin-users.service.js';
 import { RequireAdminGuard } from './admin/require-admin.guard.js';
 import { WorkshopOptionsController } from './public/workshop-options.controller.js';
 import { WorkshopOptionsService } from './public/workshop-options.service.js';
@@ -56,7 +60,7 @@ import { WorkshopOutcomeService } from './requester/workshop-outcome.service.js'
     TypeOrmModule.forRoot(createTypeOrmOptions()),
     TypeOrmModule.forFeature([AdminSession, AdminUser, AllowedDomain, Country, OtpChallenge, RequesterSession, SurveyAnswer, SurveyQuestion, SurveySubmission, TrackingSession, Workshop, WorkshopExecution, WorkshopFile, WorkshopLead, WorkshopOpportunity, WorkshopStatusHistory]),
   ],
-  controllers: [HealthController, RequesterAccessController, WorkshopOptionsController, WorkshopRequestController, WorkshopTrackingController, WorkshopSurveyController, WorkshopOutcomeController, AdminAuthController, AdminWorkshopsController],
+  controllers: [HealthController, RequesterAccessController, WorkshopOptionsController, WorkshopRequestController, WorkshopTrackingController, WorkshopSurveyController, WorkshopOutcomeController, AdminAuthController, AdminWorkshopsController, AdminDomainsController, AdminUsersController],
   providers: [
     HealthService,
     PinoLoggerService,
@@ -75,6 +79,8 @@ import { WorkshopOutcomeService } from './requester/workshop-outcome.service.js'
     RequireTrackingWorkshopGuard,
     AdminAuthService,
     AdminWorkshopsService,
+    AdminDomainsService,
+    AdminUsersService,
     RequireAdminGuard,
     WorkshopOptionsService,
     SendGridEmailProvider,

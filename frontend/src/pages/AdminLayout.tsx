@@ -42,6 +42,8 @@ export function AdminLayout() {
         <Link className="admin-brand" to="/admin/workshops">AI Envisioning <span>Administration</span></Link>
         <nav aria-label="Administration">
           <Link to="/admin/workshops">Workshops</Link>
+          <Link to="/admin/domains">Domains</Link>
+          <Link to="/admin/users">Admins</Link>
           <span className="admin-identity">{identity.displayName}</span>
           <button type="button" className="icon-button" onClick={() => void logout()} disabled={busy} aria-label="Log out" title="Log out"><LogOut size={18} /></button>
         </nav>

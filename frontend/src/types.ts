@@ -116,6 +116,24 @@ export interface AdminIdentity {
   email: string;
 }
 
+export interface AdminDomain {
+  active: boolean;
+  createdAt: string;
+  displayName: string;
+  domain: string;
+  id: string;
+  updatedAt: string;
+}
+
+export interface AdminUser {
+  active: boolean;
+  createdAt: string;
+  displayName: string;
+  email: string;
+  id: string;
+  lastLoginAt: string | null;
+}
+
 export type WorkshopStatus = WorkshopTracking['status'];
 
 export interface AdminWorkshopListItem {

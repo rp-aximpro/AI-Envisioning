@@ -2,6 +2,8 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { AdminLayout } from './pages/AdminLayout.js';
 import { AdminLoginPage } from './pages/AdminLoginPage.js';
+import { AdminDomainsPage } from './pages/AdminDomainsPage.js';
+import { AdminUsersPage } from './pages/AdminUsersPage.js';
 import { AdminWorkshopDetailPage } from './pages/AdminWorkshopDetailPage.js';
 import { AdminWorkshopQueuePage } from './pages/AdminWorkshopQueuePage.js';
 import { HomePage } from './pages/HomePage.js';
@@ -24,6 +26,8 @@ export function App() {
           <Route index element={<Navigate to="workshops" replace />} />
           <Route path="workshops" element={<AdminWorkshopQueuePage />} />
           <Route path="workshops/:id" element={<AdminWorkshopDetailPage />} />
+          <Route path="domains" element={<AdminDomainsPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
