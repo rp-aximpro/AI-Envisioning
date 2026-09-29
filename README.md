@@ -60,12 +60,10 @@ Development endpoints:
 
 - Frontend: `http://localhost:5173`
 - Backend health: `http://localhost:4000/api/health`
-- MinIO API: `http://localhost:9000`
-- MinIO console: `http://localhost:9001`
 - Mailpit UI: `http://localhost:8025`
 - PostgreSQL: `localhost:5432`
 
-The backend initializes a TypeORM PostgreSQL connection on startup and ensures the configured MinIO bucket exists in development.
+The backend initializes a TypeORM PostgreSQL connection on startup. Uploaded files are stored under `backend/uploads/` in the local Docker stack.
 
 ## Database
 
@@ -88,7 +86,7 @@ For a local rebuild, reset the Docker database volume and re-run migrations and 
 
 ```bash
 docker compose down -v
-docker compose up -d postgres minio mailpit
+docker compose up -d postgres mailpit
 cd backend
 npm run migration:run
 npm run seed:dev
