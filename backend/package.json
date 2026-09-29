@@ -1,0 +1,55 @@
+{
+  "name": "ai-envision-backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/main.ts",
+    "dev:worker": "tsx watch src/worker.ts",
+    "lint": "eslint .",
+    "migration:revert": "tsx src/database/revert-last-migration.ts",
+    "migration:run": "tsx src/database/run-migrations.ts",
+    "seed:dev": "tsx src/database/seed-dev.ts",
+    "start": "node dist/main.js",
+    "start:worker": "node dist/worker.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1131.0",
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/platform-express": "^11.1.6",
+    "@nestjs/typeorm": "^12.0.1",
+    "argon2": "^0.45.1",
+    "helmet": "^8.1.0",
+    "pg": "^8.23.0",
+    "pino": "^9.9.0",
+    "qrcode": "^1.5.4",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typeorm": "^1.1.1",
+    "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@nestjs/testing": "^11.1.6",
+    "@types/node": "^24.3.1",
+    "@types/qrcode": "^1.5.6",
+    "@types/supertest": "^6.0.3",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "supertest": "^7.1.4",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.43.0",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  }
+}
