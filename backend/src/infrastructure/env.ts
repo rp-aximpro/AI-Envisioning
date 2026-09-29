@@ -4,6 +4,7 @@ const envSchema = z.object({
   API_PORT: z.coerce.number().int().positive().default(4000),
   API_BASE_URL: z.string().url().default('http://localhost:4000'),
   ADMIN_BOOTSTRAP_EMAIL: z.string().email().default('admin@example.local'),
+  ADMIN_BOOTSTRAP_NAME: z.string().trim().min(1).max(150).default('Staging Admin'),
   ADMIN_BOOTSTRAP_PASSWORD: z.string().min(8).default('change-me'),
   ADMIN_LOGIN_MAX_ATTEMPTS: z.coerce.number().int().min(1).max(20).default(5),
   ADMIN_LOGIN_WINDOW_MINUTES: z.coerce.number().int().min(1).max(120).default(15),
@@ -16,7 +17,7 @@ const envSchema = z.object({
   FILE_STORAGE_DRIVER: z.enum(['local', 's3']).default('local'),
   LOCAL_FILE_STORAGE_DIR: z.string().min(1).default('uploads'),
   MAX_UPLOAD_BYTES: z.coerce.number().int().min(1).max(104_857_600).default(10_485_760),
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  NODE_ENV: z.enum(['development', 'test', 'staging', 'production']).default('development'),
   OTP_MAX_ATTEMPTS: z.coerce.number().int().min(1).max(20).default(5),
   OTP_RESEND_COOLDOWN_SECONDS: z.coerce.number().int().min(1).max(3600).default(60),
   OTP_SECRET: z.string().min(16).default('change-me-in-development'),
@@ -38,6 +39,10 @@ const envSchema = z.object({
 });
 
 export type AppEnv = z.infer<typeof envSchema>;
+
+export function isProductionLikeEnvironment(environment: AppEnv['NODE_ENV']): boolean {
+  return environment === 'production' || environment === 'staging';
+}
 
 export function getEnv(): AppEnv {
   return envSchema.parse(process.env);

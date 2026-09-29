@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { type CookieResponse } from '../common/http/cookie-response.types.js';
 import { type ApiRequest, type ApiResponse } from '../common/http/request-response.types.js';
 import { ZodValidationPipe } from '../common/validation/zod-validation.pipe.js';
-import { getEnv } from '../infrastructure/env.js';
+import { getEnv, isProductionLikeEnvironment } from '../infrastructure/env.js';
 import { readTrackingSessionToken, trackingSessionCookie } from './tracking-session-cookie.js';
 import { TrackingSessionService } from './tracking-session.service.js';
 import { WorkshopExecutionService, type UploadedProofFile } from './workshop-execution.service.js';
@@ -123,8 +123,8 @@ export class WorkshopTrackingController {
     const options = {
       httpOnly: true,
       path: '/api',
-      sameSite: env.NODE_ENV === 'production' ? 'none' as const : 'lax' as const,
-      secure: env.NODE_ENV === 'production',
+      sameSite: isProductionLikeEnvironment(env.NODE_ENV) ? 'none' as const : 'lax' as const,
+      secure: isProductionLikeEnvironment(env.NODE_ENV),
     };
     return includeMaxAge ? { ...options, maxAge: env.TRACKING_SESSION_TTL_MINUTES * 60_000 } : options;
   }

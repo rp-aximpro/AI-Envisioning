@@ -5,7 +5,7 @@ import { AppError } from '../common/errors/app-error.js';
 import { type CookieResponse } from '../common/http/cookie-response.types.js';
 import { type ApiRequest } from '../common/http/request-response.types.js';
 import { ZodValidationPipe } from '../common/validation/zod-validation.pipe.js';
-import { getEnv } from '../infrastructure/env.js';
+import { getEnv, isProductionLikeEnvironment } from '../infrastructure/env.js';
 import { RequesterAccessService } from './requester-access.service.js';
 import { readRequesterSessionToken, requesterSessionCookie } from './requester-session-cookie.js';
 const sendOtpSchema = z.object({ email: z.string().trim().email().max(320) });
@@ -68,8 +68,8 @@ export class RequesterAccessController {
     const options = {
       httpOnly: true,
       path: '/',
-      sameSite: env.NODE_ENV === 'production' ? 'none' as const : 'lax' as const,
-      secure: env.NODE_ENV === 'production',
+      sameSite: isProductionLikeEnvironment(env.NODE_ENV) ? 'none' as const : 'lax' as const,
+      secure: isProductionLikeEnvironment(env.NODE_ENV),
     };
     return includeMaxAge ? { ...options, maxAge: env.REQUESTER_SESSION_TTL_MINUTES * 60_000 } : options;
   }

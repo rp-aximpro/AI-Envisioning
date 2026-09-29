@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "migration:revert": "tsx src/database/revert-last-migration.ts",
     "migration:run": "tsx src/database/run-migrations.ts",
+    "seed:admin": "tsx src/database/seed-admin.ts",
     "seed:dev": "tsx src/database/seed-dev.ts",
     "start": "node dist/main.js",
     "start:worker": "node dist/worker.js",

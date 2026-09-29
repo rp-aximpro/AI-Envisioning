@@ -7,8 +7,8 @@ import { getEnv } from '../infrastructure/env.js';
 
 const env = getEnv();
 
-if (env.NODE_ENV === 'production') {
-  throw new Error('Development seed is disabled in production.');
+if (env.NODE_ENV !== 'development') {
+  throw new Error('Development seed is available only when NODE_ENV=development.');
 }
 
 const dataSource = createAppDataSource();

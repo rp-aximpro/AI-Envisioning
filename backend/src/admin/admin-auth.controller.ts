@@ -5,7 +5,7 @@ import { AppError } from '../common/errors/app-error.js';
 import { type CookieResponse } from '../common/http/cookie-response.types.js';
 import { type ApiRequest } from '../common/http/request-response.types.js';
 import { ZodValidationPipe } from '../common/validation/zod-validation.pipe.js';
-import { getEnv } from '../infrastructure/env.js';
+import { getEnv, isProductionLikeEnvironment } from '../infrastructure/env.js';
 import { AdminAuthService, type AdminIdentity } from './admin-auth.service.js';
 import { adminSessionCookie, readAdminSessionToken } from './admin-session-cookie.js';
 
@@ -54,8 +54,8 @@ export class AdminAuthController {
     const options = {
       httpOnly: true,
       path: '/api/admin',
-      sameSite: env.NODE_ENV === 'production' ? 'none' as const : 'lax' as const,
-      secure: env.NODE_ENV === 'production',
+      sameSite: isProductionLikeEnvironment(env.NODE_ENV) ? 'none' as const : 'lax' as const,
+      secure: isProductionLikeEnvironment(env.NODE_ENV),
     };
     return maxAge === undefined ? options : { ...options, maxAge };
   }

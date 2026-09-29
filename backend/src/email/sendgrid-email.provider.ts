@@ -7,7 +7,7 @@ import {
   type SendWorkshopConfirmationEmailInput,
 } from './email-provider.js';
 import { OtpPurpose } from '../database/entities/otp-challenge.entity.js';
-import { getEnv } from '../infrastructure/env.js';
+import { getEnv, isProductionLikeEnvironment } from '../infrastructure/env.js';
 import { PinoLoggerService } from '../common/logging/pino-logger.service.js';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class SendGridEmailProvider implements EmailProvider {
   ): Promise<EmailDeliveryMode> {
     const env = getEnv();
     if (!env.SENDGRID_API_KEY) {
-      if (env.NODE_ENV === 'production') {
+      if (isProductionLikeEnvironment(env.NODE_ENV)) {
         throw new Error('SENDGRID_API_KEY must be configured in production.');
       }
 
