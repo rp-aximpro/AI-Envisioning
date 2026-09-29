@@ -17,6 +17,6 @@ describe('database schema constants', () => {
   });
 
   it('keeps requester roles stable', () => {
-    expect(Object.values(RequesterRole)).toEqual(['ae', 'cst']);
+    expect(Object.values(RequesterRole)).toEqual(['AE', 'CST', 'FPM', 'WSG']);
   });
 });

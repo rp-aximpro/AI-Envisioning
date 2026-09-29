@@ -8,8 +8,10 @@ import {
 } from 'typeorm';
 
 export enum RequesterRole {
-  Ae = 'ae',
-  Cst = 'cst',
+  AE = 'AE',
+  CST = 'CST',
+  FPM = 'FPM',
+  WSG = 'WSG',
 }
 
 export enum WorkshopStatus {

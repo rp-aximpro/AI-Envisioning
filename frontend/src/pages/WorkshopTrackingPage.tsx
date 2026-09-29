@@ -199,7 +199,7 @@ export function WorkshopTrackingPage() {
     <div className="tracking-page">
       <header className="workshop-brand-header tracking-header">
         <Link className="workshop-brand-lockup" to="/" aria-label="AI Envisioning Workshops home">
-          <span>Dell Technologies</span><span className="brand-divider" aria-hidden="true" />
+          <img className="dell-logo" src="/brands/dell-logo.svg" alt="" /><span className="brand-divider" aria-hidden="true" />
           <span className="microsoft-lockup"><img src="/brands/microsoft-mark.svg" alt="" />Microsoft</span>
         </Link>
         {workshop ? <div className="tracking-session"><span>{workshop.creatorEmail}</span><button type="button" className="icon-button" onClick={() => void logout()} disabled={busy} aria-label="Log out" title="Log out"><LogOut size={18} /></button></div> : null}
@@ -240,6 +240,18 @@ export function WorkshopTrackingPage() {
               <section className="tracking-action" aria-labelledby="planned-action-title">
                 <div><h2 id="planned-action-title">Planned phase</h2><p>When the workshop is ready to move into execution, mark this phase complete.</p></div>
                 <button className="primary-button" type="button" onClick={() => void markPlannedComplete()} disabled={busy}><Check size={17} /> Mark Planned complete</button>
+              </section>
+            ) : null}
+
+            {workshop.status === 'executed' ? (
+              <section className="tracking-section" aria-labelledby="poe-requirements-title">
+                <h2 id="poe-requirements-title">Mandatory PoE files</h2>
+                <ul className="poe-requirements">
+                  <li>Picture of the workshop (incl. DELL + MSFT logos)</li>
+                  <li>Number of attendees by company</li>
+                  <li>PPTX of the presentation</li>
+                  <li>Calendar invite</li>
+                </ul>
               </section>
             ) : null}
 

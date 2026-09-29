@@ -18,7 +18,7 @@ const supportLabels = {
 
 const schema = z.object({
   requesterName: z.string().trim().min(1, 'Your name is required.').max(150),
-  requesterRole: z.enum(['ae', 'cst']),
+  requesterRole: z.enum(['AE', 'CST', 'FPM', 'WSG']),
   customerName: z.string().trim().min(1, 'Customer name is required.').max(200),
   countryCode: z.string().regex(/^[A-Z]{2}$/, 'Select a country.'),
   location: z.string().trim().min(1, 'Location is required.').max(300),
@@ -69,7 +69,7 @@ function BrandHeader() {
   return (
     <header className="workshop-brand-header">
       <a className="workshop-brand-lockup" href="/" aria-label="AI Envisioning Workshops home">
-        <span>Dell Technologies</span><span className="brand-divider" aria-hidden="true" />
+        <img className="dell-logo" src="/brands/dell-logo.svg" alt="" /><span className="brand-divider" aria-hidden="true" />
         <span className="microsoft-lockup"><img src="/brands/microsoft-mark.svg" alt="" />Microsoft</span>
       </a>
     </header>
@@ -84,7 +84,7 @@ export function WorkshopRequestPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      requesterRole: 'ae', durationHours: 4, estimatedAttendees: 10,
+      requesterRole: 'AE', durationHours: 4, estimatedAttendees: 10,
       executionSupport: 'none', fundingRequired: false,
       objectives: '', requestedFundingAmount: undefined,
     },
@@ -142,8 +142,8 @@ export function WorkshopRequestPage() {
         <div className="workshop-hero-content">
           <p className="workshop-eyebrow">Co-delivery programme</p>
           <h1>AI Envisioning Workshop planner</h1>
-          <p>AEs and CSTs register a workshop once. You instantly get a unique link to track it end to end.</p>
-          <div className="hero-brandline"><span>Dell Technologies</span><span className="brand-divider" /><span className="microsoft-lockup"><img src="/brands/microsoft-mark.svg" alt="" />Microsoft</span></div>
+          <p>AE, CST, FPM and WSG teams register a workshop once. You instantly get a unique link to track it end to end.</p>
+          <div className="hero-brandline"><img className="dell-logo" src="/brands/dell-logo.svg" alt="" /><span className="brand-divider" /><span className="microsoft-lockup"><img src="/brands/microsoft-mark.svg" alt="" />Microsoft</span></div>
         </div>
       </section>
       <main className="workshop-form-wrap">
@@ -152,7 +152,7 @@ export function WorkshopRequestPage() {
           <form className="registration-form" noValidate onSubmit={(event) => void form.handleSubmit((values) => void submit(values))(event)}>
             <label>Your name<input autoComplete="name" {...form.register('requesterName')} /><FieldError message={errors.requesterName?.message} /></label>
             <label>Your email<input type="email" value={session.email} readOnly /></label>
-            <label>Role<select {...form.register('requesterRole')}><option value="ae">AE</option><option value="cst">CST</option></select></label>
+            <label>Role<select {...form.register('requesterRole')}><option value="AE">AE</option><option value="CST">CST</option><option value="FPM">FPM</option><option value="WSG">WSG</option></select></label>
             <label>Customer name<input autoComplete="organization" {...form.register('customerName')} /><FieldError message={errors.customerName?.message} /></label>
             <label>Country<select {...form.register('countryCode')}><option value="">{options.countries.length ? 'Select a country' : 'No countries configured yet'}</option>{options.countries.map((country) => <option key={country.code} value={country.code}>{country.name}</option>)}</select><FieldError message={errors.countryCode?.message} /></label>
             <label>Location / venue<input placeholder="e.g. Munich Customer Solution Centre" {...form.register('location')} /><FieldError message={errors.location?.message} /></label>

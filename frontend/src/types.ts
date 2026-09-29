@@ -47,7 +47,7 @@ export interface WorkshopTracking {
   opportunities: WorkshopOpportunity[];
   plannedStartAt: string;
   requestedFundingAmount: string | null;
-  requesterRole: 'ae' | 'cst';
+  requesterRole: 'AE' | 'CST' | 'FPM' | 'WSG';
   status: 'pending_review' | 'planned' | 'executed' | 'follow_up' | 'completed' | 'declined';
   surveyCompletedAt: string | null;
   timezone: string;
@@ -148,7 +148,7 @@ export interface AdminWorkshopListItem {
   id: string;
   plannedStartAt: string;
   requestedFundingAmount: string | null;
-  requesterRole: 'ae' | 'cst';
+  requesterRole: 'AE' | 'CST' | 'FPM' | 'WSG';
   status: WorkshopStatus;
   workshopCode: string;
 }

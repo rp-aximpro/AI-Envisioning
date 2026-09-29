@@ -26,6 +26,7 @@ import { AddAdminReview1790700000002 } from '../database/migrations/179070000000
 import { AddWorkshopExecution1790700000003 } from '../database/migrations/1790700000003-add-workshop-execution.js';
 import { AddRepeatableSurveys1790700000004 } from '../database/migrations/1790700000004-add-repeatable-surveys.js';
 import { AddWorkshopOutcomes1790700000005 } from '../database/migrations/1790700000005-add-workshop-outcomes.js';
+import { ExpandRequesterRoles1790700000006 } from '../database/migrations/1790700000006-expand-requester-roles.js';
 import { InitialSchema1789387800000 } from '../database/migrations/1789387800000-initial-schema.js';
 import { getEnv } from './env.js';
 
@@ -47,6 +48,7 @@ function createDataSourceOptions(): DataSourceOptions {
       AddWorkshopExecution1790700000003,
       AddRepeatableSurveys1790700000004,
       AddWorkshopOutcomes1790700000005,
+      ExpandRequesterRoles1790700000006,
     ],
     synchronize: false,
   };
