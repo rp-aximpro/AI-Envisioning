@@ -70,6 +70,8 @@ services:
       ADMIN_SESSION_IDLE_TTL_MINUTES: 30
       ADMIN_SESSION_ABSOLUTE_TTL_HOURS: 12
       LOG_LEVEL: info
+      FILE_STORAGE_DRIVER: local
+      LOCAL_FILE_STORAGE_DIR: /app/uploads
       MAX_UPLOAD_BYTES: 10485760
     ports:
       - "4000:4000"
@@ -78,8 +80,6 @@ services:
       - /app/node_modules
     depends_on:
       postgres:
-        condition: service_healthy
-      minio:
         condition: service_healthy
       mailpit:
         condition: service_healthy
@@ -107,11 +107,10 @@ services:
       S3_SECRET_KEY: minioadmin
       S3_BUCKET: ai-envision-workshop-files
       S3_FORCE_PATH_STYLE: "true"
+      FILE_STORAGE_DRIVER: local
       LOG_LEVEL: info
     depends_on:
       postgres:
-        condition: service_healthy
-      minio:
         condition: service_healthy
     volumes:
       - ./backend:/app

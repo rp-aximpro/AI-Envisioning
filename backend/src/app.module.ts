@@ -27,6 +27,7 @@ import { HealthController } from './health.controller.js';
 import { HealthService } from './health.service.js';
 import { createTypeOrmOptions } from './infrastructure/database.js';
 import { StorageBootstrapService } from './infrastructure/storage-bootstrap.service.js';
+import { FileStorageService } from './infrastructure/file-storage.service.js';
 import { OtpService } from './otp/otp.service.js';
 import { RequesterAccessController } from './requester/requester-access.controller.js';
 import { RequesterAccessService } from './requester/requester-access.service.js';
@@ -61,6 +62,7 @@ import { WorkshopOutcomeService } from './requester/workshop-outcome.service.js'
     PinoLoggerService,
     RequestIdMiddleware,
     StorageBootstrapService,
+    FileStorageService,
     OtpService,
     RequesterAccessService,
     RequesterSessionService,

@@ -1,4 +1,3 @@
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'node:crypto';
@@ -10,7 +9,7 @@ import { WorkshopExecution } from '../database/entities/workshop-execution.entit
 import { WorkshopFile } from '../database/entities/workshop-file.entity.js';
 import { Workshop, WorkshopStatus } from '../database/entities/workshop.entity.js';
 import { WorkshopStatusHistory } from '../database/entities/workshop-status-history.entity.js';
-import { createS3Client } from '../infrastructure/object-storage.js';
+import { FileStorageService } from '../infrastructure/file-storage.service.js';
 import { getEnv } from '../infrastructure/env.js';
 import { TrackingSessionService, type TrackingIdentity } from './tracking-session.service.js';
 
@@ -67,14 +66,13 @@ interface ValidatedProofFile {
 
 @Injectable()
 export class WorkshopExecutionService {
-  private readonly storage = createS3Client();
-
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
     @InjectRepository(Workshop) private readonly workshopRepository: Repository<Workshop>,
     @InjectRepository(WorkshopExecution) private readonly executionRepository: Repository<WorkshopExecution>,
     @InjectRepository(WorkshopFile) private readonly fileRepository: Repository<WorkshopFile>,
     @Inject(TrackingSessionService) private readonly trackingSessions: TrackingSessionService,
+    @Inject(FileStorageService) private readonly storage: FileStorageService,
   ) {}
 
   async markPlannedComplete(trackingToken: string, sessionToken: string | undefined): Promise<void> {
@@ -112,7 +110,6 @@ export class WorkshopExecutionService {
     files: UploadedProofFile[],
   ): Promise<void> {
     const { workshop, identity } = await this.getAuthorizedWorkshop(trackingToken, sessionToken);
-    const env = getEnv();
     if (workshop.status !== WorkshopStatus.Executed) {
       throw AppError.badRequest('Mark the planned phase complete before submitting execution details.');
     }
@@ -123,15 +120,9 @@ export class WorkshopExecutionService {
       await runner.connect();
       for (const file of safeFiles) {
         const objectKey = `workshops/${workshop.id}/execution/${randomUUID()}-${file.keyFilename}`;
-        await this.storage.send(new PutObjectCommand({
-          Bucket: env.S3_BUCKET,
-          Body: file.upload.buffer,
-          ContentLength: file.upload.size,
-          ContentType: file.mimeType,
-          Key: objectKey,
-        }));
-        objectKeys.push(objectKey);
-        file.objectKey = objectKey;
+        const storedKey = await this.storage.put(objectKey, file.upload.buffer, file.mimeType);
+        objectKeys.push(storedKey);
+        file.objectKey = storedKey;
       }
 
       await runner.startTransaction();
@@ -162,7 +153,7 @@ export class WorkshopExecutionService {
       await runner.commitTransaction();
     } catch (error) {
       if (runner.isTransactionActive) await runner.rollbackTransaction();
-      await this.deleteObjects(objectKeys, env.S3_BUCKET);
+      await this.deleteObjects(objectKeys);
       throw error;
     } finally {
       await runner.release();
@@ -182,22 +173,15 @@ export class WorkshopExecutionService {
       throw AppError.badRequest('Execution details must be submitted before adding proof files.');
     }
     const safeFiles = this.validateProofFiles(files);
-    const env = getEnv();
     const objectKeys: string[] = [];
     const runner = this.dataSource.createQueryRunner();
     try {
       await runner.connect();
       for (const file of safeFiles) {
         const objectKey = `workshops/${workshop.id}/execution/${randomUUID()}-${file.keyFilename}`;
-        await this.storage.send(new PutObjectCommand({
-          Bucket: env.S3_BUCKET,
-          Body: file.upload.buffer,
-          ContentLength: file.upload.size,
-          ContentType: file.mimeType,
-          Key: objectKey,
-        }));
-        objectKeys.push(objectKey);
-        file.objectKey = objectKey;
+        const storedKey = await this.storage.put(objectKey, file.upload.buffer, file.mimeType);
+        objectKeys.push(storedKey);
+        file.objectKey = storedKey;
       }
 
       await runner.startTransaction();
@@ -219,7 +203,7 @@ export class WorkshopExecutionService {
       await runner.commitTransaction();
     } catch (error) {
       if (runner.isTransactionActive) await runner.rollbackTransaction();
-      await this.deleteObjects(objectKeys, env.S3_BUCKET);
+      await this.deleteObjects(objectKeys);
       throw error;
     } finally {
       await runner.release();
@@ -313,12 +297,10 @@ export class WorkshopExecutionService {
   private async download(workshopId: string, fileId: string): Promise<DownloadableWorkshopFile> {
     const file = await this.fileRepository.findOne({ where: { id: fileId, workshopId } });
     if (!file) throw AppError.notFound('File not found.');
-    const result = await this.storage.send(new GetObjectCommand({ Bucket: getEnv().S3_BUCKET, Key: file.objectKey }));
-    if (!result.Body) throw AppError.notFound('File content not found.');
     return {
       mimeType: file.mimeType,
       originalFilename: file.originalFilename,
-      stream: Readable.from(result.Body as AsyncIterable<Uint8Array>),
+      stream: await this.storage.get(file.objectKey),
     };
   }
 
@@ -362,7 +344,7 @@ export class WorkshopExecutionService {
     };
   }
 
-  private async deleteObjects(objectKeys: string[], bucket: string): Promise<void> {
-    await Promise.allSettled(objectKeys.map((Key) => this.storage.send(new DeleteObjectCommand({ Bucket: bucket, Key }))));
+  private async deleteObjects(objectKeys: string[]): Promise<void> {
+    await Promise.allSettled(objectKeys.map((key) => this.storage.delete(key)));
   }
 }

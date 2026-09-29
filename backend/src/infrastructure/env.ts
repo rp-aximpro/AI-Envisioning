@@ -13,6 +13,8 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1).default('postgres://postgres:postgres@localhost:5432/ai_envision'),
   EMAIL_FROM: z.string().min(1).default('AI Envisioning Workshops <no-reply@example.local>'),
   LOG_LEVEL: z.string().default('info'),
+  FILE_STORAGE_DRIVER: z.enum(['local', 's3']).default('local'),
+  LOCAL_FILE_STORAGE_DIR: z.string().min(1).default('uploads'),
   MAX_UPLOAD_BYTES: z.coerce.number().int().min(1).max(104_857_600).default(10_485_760),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   OTP_MAX_ATTEMPTS: z.coerce.number().int().min(1).max(20).default(5),

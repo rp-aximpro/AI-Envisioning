@@ -12,7 +12,7 @@ async function bootstrapWorker() {
   await dataSource.initialize();
   logger.info('Worker connected to PostgreSQL');
 
-  await ensureStorageBucket(logger);
+  if (process.env.FILE_STORAGE_DRIVER === 's3') await ensureStorageBucket(logger);
   logger.info('Worker bootstrap ready');
   writeFileSync('/tmp/ai-envision-worker-ready', new Date().toISOString());
 
